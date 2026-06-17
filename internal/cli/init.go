@@ -7,25 +7,26 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const defaultConfig = `[contents]
-dir = "contents"
+const (
+	defaultContentsDir = "contents"
+	defaultOutputDir   = "dist"
+	defaultSettingsDir = "settings"
+	defaultConfigPath  = defaultSettingsDir + "/config.toml"
+)
 
-[output]
-dir = "dist"
-`
+var defaultConfigContent = fmt.Sprintf("[contents]\ndir = %q\n\n[output]\ndir = %q\n", defaultContentsDir, defaultOutputDir)
 
 func NewInitCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "init",
 		Short: "初期ディレクトリ構成を生成する",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			dirs := []string{"contents", "dist", "settings"}
-			for _, d := range dirs {
+			for _, d := range []string{defaultContentsDir, defaultOutputDir, defaultSettingsDir} {
 				if err := mkdirIfNotExist(d); err != nil {
 					return err
 				}
 			}
-			if err := writeIfNotExist("settings/config.toml", defaultConfig); err != nil {
+			if err := writeIfNotExist(defaultConfigPath, defaultConfigContent); err != nil {
 				return err
 			}
 			fmt.Println("init completed.")
