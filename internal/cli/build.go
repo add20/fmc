@@ -18,7 +18,7 @@ func NewBuildCmd() *cobra.Command {
 				return err
 			}
 			if err := compiler.Build(cfg); err != nil {
-				return fmt.Errorf("%w", err)
+				return err
 			}
 			fmt.Println("build completed.")
 			return nil
