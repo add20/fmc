@@ -52,9 +52,13 @@ func Build(cfg config.Config) error {
 	if err := checkDuplicateSlugs(cfg.Contents.Dir, files); err != nil {
 		return err
 	}
-	entries, err := compileFiles(files, cfg.Contents.Dir, cfg.Output.Dir)
-	if err != nil {
-		return err
+	var entries []IndexEntry
+	for _, f := range files {
+		entry, err := compileFile(f, cfg.Output.Dir)
+		if err != nil {
+			return err
+		}
+		entries = append(entries, entry)
 	}
 	return writeIndex(entries, cfg.Output.Dir)
 }
@@ -95,18 +99,6 @@ func checkDuplicateSlugs(contentsDir string, files []fileInfo) error {
 		}
 	}
 	return nil
-}
-
-func compileFiles(files []fileInfo, contentsDir, outputDir string) ([]IndexEntry, error) {
-	var entries []IndexEntry
-	for _, f := range files {
-		entry, err := compileFile(f, outputDir)
-		if err != nil {
-			return nil, err
-		}
-		entries = append(entries, entry)
-	}
-	return entries, nil
 }
 
 func compileFile(f fileInfo, outputDir string) (IndexEntry, error) {
