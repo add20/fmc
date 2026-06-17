@@ -14,16 +14,6 @@ import (
 	"github.com/add20/fmc/internal/frontmatter"
 )
 
-type FMCError = fmcerr.FMCError
-type ErrorCode = fmcerr.ErrorCode
-
-const (
-	ErrDuplicateSlug    = fmcerr.ErrDuplicateSlug
-	ErrFrontMatterParse = fmcerr.ErrFrontMatterParse
-	ErrConfigLoad       = fmcerr.ErrConfigLoad
-	ErrWriteFile        = fmcerr.ErrWriteFile
-)
-
 type Document struct {
 	Slug        string         `json:"slug"`
 	SrcPath     string         `json:"srcPath"`
@@ -83,7 +73,7 @@ func walkFiles(dir string) ([]fileInfo, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, &FMCError{Code: ErrWriteFile, Message: "failed to walk contents dir", Cause: err}
+		return nil, &fmcerr.FMCError{Code: fmcerr.ErrWriteFile, Message: "failed to walk contents dir", Cause: err}
 	}
 	return files, nil
 }
@@ -98,8 +88,8 @@ func checkDuplicateSlugs(contentsDir string, files []fileInfo) error {
 		if len(paths) > 1 {
 			sort.Strings(paths)
 			list := strings.Join(paths, "\n- ")
-			return &FMCError{
-				Code:    ErrDuplicateSlug,
+			return &fmcerr.FMCError{
+				Code:    fmcerr.ErrDuplicateSlug,
 				Message: fmt.Sprintf("duplicate slug detected\n\nslug: %s\n\nfiles:\n- %s", s, list),
 			}
 		}
@@ -122,12 +112,12 @@ func compileFiles(files []fileInfo, contentsDir, outputDir string) ([]IndexEntry
 func compileFile(f fileInfo, outputDir string) (IndexEntry, error) {
 	data, err := os.ReadFile(f.absPath)
 	if err != nil {
-		return IndexEntry{}, &FMCError{Code: ErrWriteFile, Message: "failed to read file", Cause: err}
+		return IndexEntry{}, &fmcerr.FMCError{Code: fmcerr.ErrWriteFile, Message: "failed to read file", Cause: err}
 	}
 
 	res, err := frontmatter.Parse(string(data))
 	if err != nil {
-		return IndexEntry{}, &FMCError{Code: ErrFrontMatterParse, Message: f.srcPath, Cause: err}
+		return IndexEntry{}, &fmcerr.FMCError{Code: fmcerr.ErrFrontMatterParse, Message: f.srcPath, Cause: err}
 	}
 
 	slug := Slug(f.srcPath)
@@ -141,15 +131,15 @@ func compileFile(f fileInfo, outputDir string) (IndexEntry, error) {
 	outRel := filepath.ToSlash(f.srcPath) + ".json"
 	outAbs := filepath.Join(outputDir, f.srcPath+".json")
 	if err := os.MkdirAll(filepath.Dir(outAbs), 0755); err != nil {
-		return IndexEntry{}, &FMCError{Code: ErrWriteFile, Message: "mkdir failed", Cause: err}
+		return IndexEntry{}, &fmcerr.FMCError{Code: fmcerr.ErrWriteFile, Message: "mkdir failed", Cause: err}
 	}
 
 	jsonData, err := json.MarshalIndent(doc, "", "  ")
 	if err != nil {
-		return IndexEntry{}, &FMCError{Code: ErrWriteFile, Message: "marshal failed", Cause: err}
+		return IndexEntry{}, &fmcerr.FMCError{Code: fmcerr.ErrWriteFile, Message: "marshal failed", Cause: err}
 	}
 	if err := os.WriteFile(outAbs, jsonData, 0644); err != nil {
-		return IndexEntry{}, &FMCError{Code: ErrWriteFile, Message: "write failed", Cause: err}
+		return IndexEntry{}, &fmcerr.FMCError{Code: fmcerr.ErrWriteFile, Message: "write failed", Cause: err}
 	}
 
 	var title *string
@@ -171,13 +161,13 @@ func writeIndex(entries []IndexEntry, outputDir string) error {
 
 	indexData, err := json.MarshalIndent(entries, "", "  ")
 	if err != nil {
-		return &FMCError{Code: ErrWriteFile, Message: "marshal index failed", Cause: err}
+		return &fmcerr.FMCError{Code: fmcerr.ErrWriteFile, Message: "marshal index failed", Cause: err}
 	}
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
-		return &FMCError{Code: ErrWriteFile, Message: "mkdir dist failed", Cause: err}
+		return &fmcerr.FMCError{Code: fmcerr.ErrWriteFile, Message: "mkdir dist failed", Cause: err}
 	}
 	if err := os.WriteFile(filepath.Join(outputDir, "index.json"), indexData, 0644); err != nil {
-		return &FMCError{Code: ErrWriteFile, Message: "write index.json failed", Cause: err}
+		return &fmcerr.FMCError{Code: fmcerr.ErrWriteFile, Message: "write index.json failed", Cause: err}
 	}
 	return nil
 }
