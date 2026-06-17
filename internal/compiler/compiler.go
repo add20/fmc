@@ -49,7 +49,7 @@ func Build(cfg config.Config) error {
 	if err != nil {
 		return err
 	}
-	if err := checkDuplicateSlugs(cfg.Contents.Dir, files); err != nil {
+	if err := checkDuplicateSlugs(files); err != nil {
 		return err
 	}
 	var entries []IndexEntry
@@ -82,11 +82,11 @@ func walkFiles(dir string) ([]fileInfo, error) {
 	return files, nil
 }
 
-func checkDuplicateSlugs(contentsDir string, files []fileInfo) error {
+func checkDuplicateSlugs(files []fileInfo) error {
 	slugToFiles := map[string][]string{}
 	for _, f := range files {
 		s := Slug(f.srcPath)
-		slugToFiles[s] = append(slugToFiles[s], filepath.Join(contentsDir, f.srcPath))
+		slugToFiles[s] = append(slugToFiles[s], f.absPath)
 	}
 	for s, paths := range slugToFiles {
 		if len(paths) > 1 {
