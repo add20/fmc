@@ -1,0 +1,5 @@
+[contents]
+dir = "testdata/contents"
+
+[output]
+dir = "testdata/dist"
