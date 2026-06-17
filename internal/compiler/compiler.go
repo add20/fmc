@@ -77,7 +77,7 @@ func walkFiles(dir string) ([]fileInfo, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, &fmcerr.FMCError{Code: fmcerr.ErrWriteFile, Message: "failed to walk contents dir", Cause: err}
+		return nil, &fmcerr.FMCError{Code: fmcerr.ErrReadFile, Message: "failed to walk contents dir", Cause: err}
 	}
 	return files, nil
 }
@@ -104,7 +104,7 @@ func checkDuplicateSlugs(files []fileInfo) error {
 func compileFile(f fileInfo, outputDir string) (IndexEntry, error) {
 	data, err := os.ReadFile(f.absPath)
 	if err != nil {
-		return IndexEntry{}, &fmcerr.FMCError{Code: fmcerr.ErrWriteFile, Message: "failed to read file", Cause: err}
+		return IndexEntry{}, &fmcerr.FMCError{Code: fmcerr.ErrReadFile, Message: "failed to read file", Cause: err}
 	}
 
 	res, err := frontmatter.Parse(string(data))

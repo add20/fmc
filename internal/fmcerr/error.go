@@ -8,6 +8,7 @@ const (
 	ErrDuplicateSlug    ErrorCode = "DUPLICATE_SLUG"
 	ErrFrontMatterParse ErrorCode = "FRONTMATTER_PARSE"
 	ErrConfigLoad       ErrorCode = "CONFIG_LOAD"
+	ErrReadFile         ErrorCode = "READ_FILE"
 	ErrWriteFile        ErrorCode = "WRITE_FILE"
 )
 
