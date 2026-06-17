@@ -8,6 +8,7 @@ import (
 
 	"github.com/add20/fmc/internal/compiler"
 	"github.com/add20/fmc/internal/config"
+	"github.com/add20/fmc/internal/fmcerr"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -74,9 +75,9 @@ func TestBuildDuplicateSlug(t *testing.T) {
 
 	err := compiler.Build(cfg)
 	require.Error(t, err)
-	fmcErr, ok := err.(*compiler.FMCError)
+	fmcErr, ok := err.(*fmcerr.FMCError)
 	require.True(t, ok)
-	assert.Equal(t, compiler.ErrDuplicateSlug, fmcErr.Code)
+	assert.Equal(t, fmcerr.ErrDuplicateSlug, fmcErr.Code)
 }
 
 func TestBuildOutputJSON(t *testing.T) {

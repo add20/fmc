@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/add20/fmc/internal/config"
+	"github.com/add20/fmc/internal/fmcerr"
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +19,7 @@ func NewCleanCmd() *cobra.Command {
 				return err
 			}
 			if err := os.RemoveAll(cfg.Output.Dir); err != nil {
-				return err
+				return &fmcerr.FMCError{Code: fmcerr.ErrWriteFile, Message: "failed to remove dist dir", Cause: err}
 			}
 			fmt.Println("clean completed.")
 			return nil

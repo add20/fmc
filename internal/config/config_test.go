@@ -1,9 +1,11 @@
 package config_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/add20/fmc/internal/config"
+	"github.com/add20/fmc/internal/fmcerr"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -17,5 +19,8 @@ func TestLoad(t *testing.T) {
 
 func TestLoadNotFound(t *testing.T) {
 	_, err := config.Load("nonexistent.toml")
-	assert.Error(t, err)
+	require.Error(t, err)
+	var fmcErr *fmcerr.FMCError
+	require.True(t, errors.As(err, &fmcErr))
+	assert.Equal(t, fmcerr.ErrConfigLoad, fmcErr.Code)
 }
