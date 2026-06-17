@@ -16,23 +16,24 @@ type Result struct {
 
 func Parse(src string) (Result, error) {
 	if strings.HasPrefix(src, "---\n") || src == "---" {
-		return parseYAML(src)
+		return parseBlock(src, "---", func(b []byte, v any) error { return yaml.Unmarshal(b, v) })
 	}
 	if strings.HasPrefix(src, "+++\n") || src == "+++" {
-		return parseTOML(src)
+		return parseBlock(src, "+++", func(b []byte, v any) error { return toml.Unmarshal(b, v) })
 	}
 	return Result{FrontMatter: FrontMatter{}, Content: src}, nil
 }
 
-func parseYAML(src string) (Result, error) {
-	rest := src[4:] // strip leading "---\n"
-	idx := strings.Index(rest, "\n---")
+func parseBlock(src, delim string, unmarshal func([]byte, any) error) (Result, error) {
+	rest := src[len(delim)+1:] // デリミタ行と改行を除去
+	idx := strings.Index(rest, "\n"+delim)
 	if idx == -1 {
 		return Result{FrontMatter: FrontMatter{}, Content: src}, nil
 	}
+
 	rawFM := rest[:idx]
+	after := rest[idx+len(delim)+1:] // "\n" + delim を除去
 	content := ""
-	after := rest[idx+4:] // skip "\n---"
 	if len(after) > 0 && after[0] == '\n' {
 		content = after[1:]
 	} else {
@@ -40,32 +41,7 @@ func parseYAML(src string) (Result, error) {
 	}
 
 	var fm FrontMatter
-	if err := yaml.Unmarshal([]byte(rawFM), &fm); err != nil {
-		return Result{}, err
-	}
-	if fm == nil {
-		fm = FrontMatter{}
-	}
-	return Result{FrontMatter: fm, Content: content}, nil
-}
-
-func parseTOML(src string) (Result, error) {
-	rest := src[4:] // strip leading "+++\n"
-	idx := strings.Index(rest, "\n+++")
-	if idx == -1 {
-		return Result{FrontMatter: FrontMatter{}, Content: src}, nil
-	}
-	rawFM := rest[:idx]
-	content := ""
-	after := rest[idx+4:] // skip "\n+++"
-	if len(after) > 0 && after[0] == '\n' {
-		content = after[1:]
-	} else {
-		content = after
-	}
-
-	var fm FrontMatter
-	if err := toml.Unmarshal([]byte(rawFM), &fm); err != nil {
+	if err := unmarshal([]byte(rawFM), &fm); err != nil {
 		return Result{}, err
 	}
 	if fm == nil {
