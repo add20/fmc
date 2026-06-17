@@ -1,9 +1,9 @@
 package config
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/add20/fmc/internal/fmcerr"
 	"github.com/pelletier/go-toml/v2"
 )
 
@@ -22,11 +22,11 @@ type Config struct {
 func Load(path string) (Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return Config{}, fmt.Errorf("CONFIG_LOAD: %w", err)
+		return Config{}, &fmcerr.FMCError{Code: fmcerr.ErrConfigLoad, Message: path, Cause: err}
 	}
 	var cfg Config
 	if err := toml.Unmarshal(data, &cfg); err != nil {
-		return Config{}, fmt.Errorf("CONFIG_LOAD: %w", err)
+		return Config{}, &fmcerr.FMCError{Code: fmcerr.ErrConfigLoad, Message: "failed to parse config", Cause: err}
 	}
 	return cfg, nil
 }

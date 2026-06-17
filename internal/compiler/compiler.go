@@ -10,36 +10,26 @@ import (
 	"strings"
 
 	"github.com/add20/fmc/internal/config"
+	"github.com/add20/fmc/internal/fmcerr"
 	"github.com/add20/fmc/internal/frontmatter"
 )
 
-type ErrorCode string
+// fmcerr の型をこのパッケージからも参照できるようにエイリアスを公開する
+type FMCError = fmcerr.FMCError
+type ErrorCode = fmcerr.ErrorCode
 
 const (
-	ErrDuplicateSlug    ErrorCode = "DUPLICATE_SLUG"
-	ErrFrontMatterParse ErrorCode = "FRONTMATTER_PARSE"
-	ErrConfigLoad       ErrorCode = "CONFIG_LOAD"
-	ErrWriteFile        ErrorCode = "WRITE_FILE"
+	ErrDuplicateSlug    = fmcerr.ErrDuplicateSlug
+	ErrFrontMatterParse = fmcerr.ErrFrontMatterParse
+	ErrConfigLoad       = fmcerr.ErrConfigLoad
+	ErrWriteFile        = fmcerr.ErrWriteFile
 )
 
-type FMCError struct {
-	Code    ErrorCode
-	Message string
-	Cause   error
-}
-
-func (e *FMCError) Error() string {
-	if e.Cause != nil {
-		return fmt.Sprintf("%s: %s: %v", e.Code, e.Message, e.Cause)
-	}
-	return fmt.Sprintf("%s: %s", e.Code, e.Message)
-}
-
 type Document struct {
-	Slug        string                 `json:"slug"`
-	SrcPath     string                 `json:"srcPath"`
-	FrontMatter map[string]any         `json:"frontMatter"`
-	Content     string                 `json:"content"`
+	Slug        string         `json:"slug"`
+	SrcPath     string         `json:"srcPath"`
+	FrontMatter map[string]any `json:"frontMatter"`
+	Content     string         `json:"content"`
 }
 
 type IndexEntry struct {
