@@ -32,8 +32,9 @@ type fileInfo struct {
 	absPath string
 }
 
-func Slug(filename string) string {
-	name := filepath.Base(filename)
+func Slug(srcPath string) string {
+	dir := filepath.Dir(srcPath)
+	name := filepath.Base(srcPath)
 	for {
 		ext := filepath.Ext(name)
 		if ext == "" {
@@ -41,7 +42,10 @@ func Slug(filename string) string {
 		}
 		name = strings.TrimSuffix(name, ext)
 	}
-	return name
+	if dir == "." {
+		return name
+	}
+	return filepath.ToSlash(filepath.Join(dir, name))
 }
 
 func Build(cfg config.Config) error {

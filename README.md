@@ -104,14 +104,16 @@ dir = "dist"
 
 ## slug
 
-ファイル名から全ての拡張子を除去した値です。
+contents からの相対パスにおいて、ファイル名から全ての拡張子を除去した値です。REST API のパスとして利用できます。
 
 ```
-README.md     → README
-archive.tar.gz → archive
+README.md               → README
+archive.tar.gz          → archive
+2026/06/README.md       → 2026/06/README
+2026/06/archive.tar.gz  → 2026/06/archive
 ```
 
-同一ディレクトリ内で slug が重複する場合はビルドエラーになります。
+異なるディレクトリの同名ファイルは slug が異なるため重複しません。同一ディレクトリ内で拡張子のみ異なるファイルが存在する場合はビルドエラーになります。
 
 ## 開発
 

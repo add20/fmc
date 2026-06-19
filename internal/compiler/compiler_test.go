@@ -32,6 +32,9 @@ func TestSlug(t *testing.T) {
 		{"README.md.txt", "README"},
 		{"archive.tar.gz", "archive"},
 		{"memo", "memo"},
+		{"2026/06/README.md", "2026/06/README"},
+		{"2026/06/archive.tar.gz", "2026/06/archive"},
+		{"a/b/c/memo", "a/b/c/memo"},
 	}
 	for _, c := range cases {
 		assert.Equal(t, c.out, compiler.Slug(c.in), c.in)
@@ -91,7 +94,7 @@ func TestBuildOutputJSON(t *testing.T) {
 
 	var doc compiler.Document
 	require.NoError(t, json.Unmarshal(data, &doc))
-	assert.Equal(t, "README", doc.Slug)
+	assert.Equal(t, "2026/06/README", doc.Slug)
 	assert.Equal(t, "2026/06/README.md", doc.SrcPath)
 	assert.Equal(t, "最初に読むファイル", doc.FrontMatter["title"])
 }

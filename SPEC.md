@@ -165,15 +165,16 @@ tags = ["go", "cms"]
 
 ### slug
 
-ファイル名から全ての拡張子を除去した値。
+contents ディレクトリからの相対パスにおいて、ファイル名から全ての拡張子を除去した値。REST API のパスとして利用できる識別子とする。
 
 例
 
 ```text
-README.md       → README
-README.txt      → README
-README.md.txt   → README
-archive.tar.gz  → archive
+README.md               → README
+README.md.txt           → README
+archive.tar.gz          → archive
+2026/06/README.md       → 2026/06/README
+2026/06/archive.tar.gz  → 2026/06/archive
 ```
 
 ---
@@ -306,6 +307,9 @@ title が存在しない場合は null とする。
 
 slug が重複した場合はビルドエラーとする。
 
+slug はディレクトリパスを含むため、異なるディレクトリに同名ファイルがあっても重複しない。
+同一ディレクトリ内で拡張子のみ異なるファイルが存在する場合に重複となる。
+
 例
 
 ```text
@@ -322,7 +326,22 @@ README
 
 となるためエラー。
 
-例
+```text
+contents/
+├── 2026/06/README.md
+└── 2026/07/README.md
+```
+
+それぞれ
+
+```text
+2026/06/README
+2026/07/README
+```
+
+となるため重複しない。
+
+例（エラーメッセージ）
 
 ```text
 ERROR: duplicate slug detected
