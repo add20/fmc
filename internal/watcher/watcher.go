@@ -25,7 +25,7 @@ func Watch(cfg config.Config) error {
 	}
 
 	fmt.Printf("watching %s ...\n", cfg.Contents.Dir)
-	runBuild(w, cfg)
+	runBuild(cfg)
 
 	for {
 		select {
@@ -34,15 +34,14 @@ func Watch(cfg config.Config) error {
 				return nil
 			}
 			if event.Has(fsnotify.Create) {
-				info, err := os.Stat(event.Name)
-				if err == nil && info.IsDir() {
+				if info, err := os.Stat(event.Name); err == nil && info.IsDir() {
 					_ = w.Add(event.Name)
 					continue
 				}
 			}
 			if event.Has(fsnotify.Create) || event.Has(fsnotify.Write) ||
 				event.Has(fsnotify.Remove) || event.Has(fsnotify.Rename) {
-				runBuild(w, cfg)
+				runBuild(cfg)
 			}
 		case err, ok := <-w.Errors:
 			if !ok {
@@ -53,7 +52,7 @@ func Watch(cfg config.Config) error {
 	}
 }
 
-func runBuild(w *fsnotify.Watcher, cfg config.Config) {
+func runBuild(cfg config.Config) {
 	err := compiler.Build(cfg)
 	if err == nil {
 		fmt.Println("build completed.")
@@ -69,8 +68,7 @@ func runBuild(w *fsnotify.Watcher, cfg config.Config) {
 			return
 		case fmcerr.ErrFrontMatterParse:
 			fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
-			// fmcErr.Message には srcPath が入っている
-			jsonPath := filepath.Join(cfg.Output.Dir, fmcErr.Message+".json")
+			jsonPath := filepath.Join(cfg.Output.Dir, filepath.FromSlash(fmcErr.Message) + ".json")
 			_ = os.Remove(jsonPath)
 			return
 		}

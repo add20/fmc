@@ -109,7 +109,7 @@ func compileFile(f fileInfo, outputDir string) (IndexEntry, error) {
 
 	res, err := frontmatter.Parse(string(data))
 	if err != nil {
-		return IndexEntry{}, &fmcerr.FMCError{Code: fmcerr.ErrFrontMatterParse, Message: f.srcPath, Cause: err}
+		return IndexEntry{}, &fmcerr.FMCError{Code: fmcerr.ErrFrontMatterParse, Message: filepath.ToSlash(f.srcPath), Cause: err}
 	}
 
 	slug := Slug(f.srcPath)
