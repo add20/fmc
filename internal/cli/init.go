@@ -8,20 +8,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	defaultContentsDir = "contents"
-	defaultOutputDir   = "dist"
-	defaultSettingsDir = "settings"
-)
-
-var defaultConfigContent = fmt.Sprintf("[contents]\ndir = %q\n\n[output]\ndir = %q\n", defaultContentsDir, defaultOutputDir)
+var defaultConfigContent = fmt.Sprintf("[contents]\ndir = %q\n\n[output]\ndir = %q\n", config.DefaultContentsDir, config.DefaultOutputDir)
 
 func NewInitCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "init",
 		Short: "初期ディレクトリ構成を生成する",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			for _, d := range []string{defaultContentsDir, defaultOutputDir, defaultSettingsDir} {
+			for _, d := range []string{config.DefaultContentsDir, config.DefaultOutputDir, config.DefaultSettingsDir} {
 				if err := mkdirIfNotExist(d); err != nil {
 					return err
 				}

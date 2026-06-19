@@ -7,7 +7,12 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
-const DefaultConfigPath = "settings/config.toml"
+const (
+	DefaultContentsDir = "contents"
+	DefaultOutputDir   = "dist"
+	DefaultSettingsDir = "settings"
+	DefaultConfigPath  = DefaultSettingsDir + "/config.toml"
+)
 
 type Config struct {
 	Contents struct {
