@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/add20/fmc/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -11,7 +12,6 @@ const (
 	defaultContentsDir = "contents"
 	defaultOutputDir   = "dist"
 	defaultSettingsDir = "settings"
-	defaultConfigPath  = defaultSettingsDir + "/config.toml"
 )
 
 var defaultConfigContent = fmt.Sprintf("[contents]\ndir = %q\n\n[output]\ndir = %q\n", defaultContentsDir, defaultOutputDir)
@@ -26,7 +26,7 @@ func NewInitCmd() *cobra.Command {
 					return err
 				}
 			}
-			if err := writeIfNotExist(defaultConfigPath, defaultConfigContent); err != nil {
+			if err := writeIfNotExist(config.DefaultConfigPath, defaultConfigContent); err != nil {
 				return err
 			}
 			fmt.Println("init completed.")
