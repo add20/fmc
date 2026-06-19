@@ -69,7 +69,7 @@ tags = ["go"]
 
 ```json
 {
-  "slug": "README",
+  "slug": "2026/06/README",
   "srcPath": "2026/06/README.md",
   "frontMatter": {
     "title": "Hello"
@@ -83,7 +83,7 @@ tags = ["go"]
 ```json
 [
   {
-    "slug": "README",
+    "slug": "2026/06/README",
     "path": "2026/06/README.md.json",
     "title": "Hello"
   }
