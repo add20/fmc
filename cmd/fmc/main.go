@@ -16,6 +16,7 @@ func main() {
 		cli.NewBuildCmd(),
 		cli.NewInitCmd(),
 		cli.NewCleanCmd(),
+		cli.NewWatchCmd(),
 	)
 	if err := root.Execute(); err != nil {
 		os.Exit(1)
