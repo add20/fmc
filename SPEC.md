@@ -99,6 +99,17 @@ dir = "contents"
 dir = "dist"
 ```
 
+### [index]
+
+index.json の各エントリに含める追加の Frontmatter キーを指定する。任意。
+
+```toml
+[index]
+fields = ["category", "tags"]
+```
+
+指定したキーは各エントリの `frontMatter` に入れ子で出力される。未指定の場合は出力しない。
+
 ---
 
 ## Supported Source Files
@@ -287,7 +298,11 @@ index.json は全ドキュメントの一覧である。
     "slug": "README",
     "path": "2026/06/README.md.json",
     "title": "最初に読むファイル",
-    "draft": false
+    "draft": false,
+    "frontMatter": {
+      "category": "blog",
+      "tags": ["go", "cms"]
+    }
   }
 ]
 ```
@@ -307,6 +322,14 @@ title が存在しない場合は null とする。
 frontMatter.draft の値。
 
 draft が存在しない場合、または bool でない場合は false とする。
+
+### frontMatter
+
+設定 `[index] fields` で指定したキーのうち、そのドキュメントの Frontmatter に存在するものを入れ子で出力する。
+
+指定キーがそのドキュメントに存在しない場合は、そのキーを省略する。
+
+`fields` 未指定、または該当キーが一つもない場合は `frontMatter` 自体を出力しない。
 
 ---
 
