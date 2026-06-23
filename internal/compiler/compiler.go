@@ -25,6 +25,7 @@ type IndexEntry struct {
 	Slug  string  `json:"slug"`
 	Path  string  `json:"path"`
 	Title *string `json:"title"`
+	Draft bool    `json:"draft"`
 }
 
 type fileInfo struct {
@@ -144,7 +145,13 @@ func compileFile(f fileInfo, outputDir string) (IndexEntry, error) {
 			title = &s
 		}
 	}
-	return IndexEntry{Slug: slug, Path: outRel, Title: title}, nil
+	var draft bool
+	if d, ok := res.FrontMatter["draft"]; ok {
+		if b, ok := d.(bool); ok {
+			draft = b
+		}
+	}
+	return IndexEntry{Slug: slug, Path: outRel, Title: title, Draft: draft}, nil
 }
 
 func writeIndex(entries []IndexEntry, outputDir string) error {

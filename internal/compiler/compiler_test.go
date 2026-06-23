@@ -56,14 +56,25 @@ func TestBuild(t *testing.T) {
 	assert.GreaterOrEqual(t, len(entries), 1)
 
 	// title が null になるエントリの確認
-	var found bool
+	var foundNoTitle bool
 	for _, e := range entries {
 		if e.Slug == "notitle" {
 			assert.Nil(t, e.Title)
-			found = true
+			assert.False(t, e.Draft)
+			foundNoTitle = true
 		}
 	}
-	assert.True(t, found, "notitle エントリが見つからない")
+	assert.True(t, foundNoTitle, "notitle エントリが見つからない")
+
+	// draft: true のエントリの確認
+	var foundDraft bool
+	for _, e := range entries {
+		if e.Slug == "draft-post" {
+			assert.True(t, e.Draft)
+			foundDraft = true
+		}
+	}
+	assert.True(t, foundDraft, "draft-post エントリが見つからない")
 }
 
 func TestBuildDuplicateSlug(t *testing.T) {
