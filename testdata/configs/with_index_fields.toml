@@ -1,0 +1,8 @@
+[contents]
+dir = "testdata/contents"
+
+[output]
+dir = "testdata/dist"
+
+[index]
+fields = ["category", "tags"]

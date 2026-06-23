@@ -71,10 +71,42 @@ func TestBuild(t *testing.T) {
 	for _, e := range entries {
 		if e.Slug == "draft-post" {
 			assert.True(t, e.Draft)
+			// fields 未設定では frontMatter を含めない（後方互換）
+			assert.Nil(t, e.FrontMatter)
 			foundDraft = true
 		}
 	}
 	assert.True(t, foundDraft, "draft-post エントリが見つからない")
+}
+
+func TestBuildIndexFields(t *testing.T) {
+	cfg, distDir := testConfig(t)
+	cfg.Index.Fields = []string{"category", "tags"}
+	require.NoError(t, compiler.Build(cfg))
+
+	indexPath := filepath.Join(distDir, "index.json")
+	data, err := os.ReadFile(indexPath)
+	require.NoError(t, err)
+
+	var entries []compiler.IndexEntry
+	require.NoError(t, json.Unmarshal(data, &entries))
+
+	byslug := map[string]compiler.IndexEntry{}
+	for _, e := range entries {
+		byslug[e.Slug] = e
+	}
+
+	// category/tags を持つエントリには frontMatter が入れ子で出る
+	dp, ok := byslug["draft-post"]
+	require.True(t, ok, "draft-post エントリが見つからない")
+	require.NotNil(t, dp.FrontMatter)
+	assert.Equal(t, "blog", dp.FrontMatter["category"])
+	assert.Contains(t, dp.FrontMatter, "tags")
+
+	// 指定キーを持たないエントリでは frontMatter を出力しない
+	nt, ok := byslug["notitle"]
+	require.True(t, ok, "notitle エントリが見つからない")
+	assert.NotContains(t, nt.FrontMatter, "category")
 }
 
 func TestBuildDuplicateSlug(t *testing.T) {

@@ -17,6 +17,12 @@ func TestLoad(t *testing.T) {
 	assert.Equal(t, "testdata/dist", cfg.Output.Dir)
 }
 
+func TestLoadIndexFields(t *testing.T) {
+	cfg, err := config.Load("../../testdata/configs/with_index_fields.toml")
+	require.NoError(t, err)
+	assert.Equal(t, []string{"category", "tags"}, cfg.Index.Fields)
+}
+
 func TestLoadNotFound(t *testing.T) {
 	_, err := config.Load("nonexistent.toml")
 	require.Error(t, err)
