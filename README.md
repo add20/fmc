@@ -85,10 +85,13 @@ tags = ["go"]
   {
     "slug": "2026/06/README",
     "path": "2026/06/README.md.json",
-    "title": "Hello"
+    "title": "Hello",
+    "draft": false
   }
 ]
 ```
+
+`draft` は Frontmatter の `draft` キーの値です。存在しない場合は `false` になります。
 
 ## 設定
 

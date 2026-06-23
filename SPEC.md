@@ -286,7 +286,8 @@ index.json は全ドキュメントの一覧である。
   {
     "slug": "README",
     "path": "2026/06/README.md.json",
-    "title": "最初に読むファイル"
+    "title": "最初に読むファイル",
+    "draft": false
   }
 ]
 ```
@@ -300,6 +301,12 @@ dist からの相対パス。
 frontMatter.title の値。
 
 title が存在しない場合は null とする。
+
+### draft
+
+frontMatter.draft の値。
+
+draft が存在しない場合、または bool でない場合は false とする。
 
 ---
 

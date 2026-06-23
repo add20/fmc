@@ -171,7 +171,7 @@ srcPath 昇順
 
 ---
 
-# title
+# title / draft
 
 IndexEntry は以下とする。
 
@@ -180,6 +180,7 @@ type IndexEntry struct {
     Slug  string  `json:"slug"`
     Path  string  `json:"path"`
     Title *string `json:"title"`
+    Draft bool    `json:"draft"`
 }
 ```
 
@@ -202,6 +203,22 @@ title が文字列でない場合も
 ```json
 {
   "title": null
+}
+```
+
+を出力する。
+
+エラーにはしない。
+
+---
+
+# frontMatter.draft
+
+draft が存在しない場合、または bool でない場合は
+
+```json
+{
+  "draft": false
 }
 ```
 
