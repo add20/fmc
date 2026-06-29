@@ -124,14 +124,8 @@ type Config struct {
     Output struct {
         Dir string `toml:"dir"`
     } `toml:"output"`
-
-    Index struct {
-        Fields []string `toml:"fields"`
-    } `toml:"index"`
 }
 ```
-
-`Index.Fields` は index.json に含める追加 Frontmatter キーのホワイトリスト。未指定時は nil。
 
 設定ファイル
 
@@ -183,11 +177,10 @@ IndexEntry は以下とする。
 
 ```go
 type IndexEntry struct {
-    Slug        string         `json:"slug"`
-    Path        string         `json:"path"`
-    Title       *string        `json:"title"`
-    Draft       bool           `json:"draft"`
-    FrontMatter map[string]any `json:"frontMatter,omitempty"`
+    Slug  string  `json:"slug"`
+    Path  string  `json:"path"`
+    Title *string `json:"title"`
+    Draft bool    `json:"draft"`
 }
 ```
 
@@ -232,16 +225,6 @@ draft が存在しない場合、または bool でない場合は
 を出力する。
 
 エラーにはしない。
-
----
-
-# index.json の frontMatter
-
-`Index.Fields` で指定したキーを走査し、そのドキュメントの Frontmatter に存在するものだけを `FrontMatter` map に詰める。
-
-存在しないキーは省略する。
-
-抽出結果が空の場合は map を nil のままにし、`omitempty` により `frontMatter` を出力しない。
 
 ---
 

@@ -22,10 +22,6 @@ type Config struct {
 	Output struct {
 		Dir string `toml:"dir"`
 	} `toml:"output"`
-
-	Index struct {
-		Fields []string `toml:"fields"`
-	} `toml:"index"`
 }
 
 func Load(path string) (Config, error) {

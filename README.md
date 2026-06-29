@@ -86,18 +86,12 @@ tags = ["go"]
     "slug": "2026/06/README",
     "path": "2026/06/README.md.json",
     "title": "Hello",
-    "draft": false,
-    "frontMatter": {
-      "category": "blog",
-      "tags": ["go"]
-    }
+    "draft": false
   }
 ]
 ```
 
 `draft` は Frontmatter の `draft` キーの値です。存在しない場合は `false` になります。
-
-`frontMatter` には設定 `[index] fields` で指定したキーが入れ子で出力されます（後述）。指定がない場合は出力されません。
 
 ## 設定
 
@@ -110,17 +104,6 @@ dir = "contents"
 [output]
 dir = "dist"
 ```
-
-### index.json に Frontmatter を含める
-
-`[index] fields` で指定したキーを `index.json` の各エントリの `frontMatter` に含められます。一覧画面でのフィルタや表示に必要なキーだけを選んで含めることで、`index.json` を軽量に保てます。
-
-```toml
-[index]
-fields = ["category", "tags"]
-```
-
-指定したキーがそのドキュメントの Frontmatter に無い場合は、そのキーは省略されます。
 
 ## slug
 

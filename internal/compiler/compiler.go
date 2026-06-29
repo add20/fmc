@@ -22,11 +22,10 @@ type Document struct {
 }
 
 type IndexEntry struct {
-	Slug        string         `json:"slug"`
-	Path        string         `json:"path"`
-	Title       *string        `json:"title"`
-	Draft       bool           `json:"draft"`
-	FrontMatter map[string]any `json:"frontMatter,omitempty"`
+	Slug  string  `json:"slug"`
+	Path  string  `json:"path"`
+	Title *string `json:"title"`
+	Draft bool    `json:"draft"`
 }
 
 type fileInfo struct {
@@ -60,7 +59,7 @@ func Build(cfg config.Config) error {
 	}
 	var entries []IndexEntry
 	for _, f := range files {
-		entry, err := compileFile(f, cfg.Output.Dir, cfg.Index.Fields)
+		entry, err := compileFile(f, cfg.Output.Dir)
 		if err != nil {
 			return err
 		}
@@ -107,7 +106,7 @@ func checkDuplicateSlugs(files []fileInfo) error {
 	return nil
 }
 
-func compileFile(f fileInfo, outputDir string, indexFields []string) (IndexEntry, error) {
+func compileFile(f fileInfo, outputDir string) (IndexEntry, error) {
 	data, err := os.ReadFile(f.absPath)
 	if err != nil {
 		return IndexEntry{}, &fmcerr.FMCError{Code: fmcerr.ErrReadFile, Message: "failed to read file", Cause: err}
@@ -152,16 +151,7 @@ func compileFile(f fileInfo, outputDir string, indexFields []string) (IndexEntry
 			draft = b
 		}
 	}
-	var extra map[string]any
-	for _, key := range indexFields {
-		if v, ok := res.FrontMatter[key]; ok {
-			if extra == nil {
-				extra = map[string]any{}
-			}
-			extra[key] = v
-		}
-	}
-	return IndexEntry{Slug: slug, Path: outRel, Title: title, Draft: draft, FrontMatter: extra}, nil
+	return IndexEntry{Slug: slug, Path: outRel, Title: title, Draft: draft}, nil
 }
 
 func writeIndex(entries []IndexEntry, outputDir string) error {
